@@ -15,14 +15,32 @@ function create(req, res, next) {
     .catch(next);
 }
 
-async function update(req, res, next) {
-  res.json({ data: { supplier_name: "updated supplier" } });
+function update(req, res, next) {
+  const updatedSupplier = {
+    ...req.body.data,
+    supplier_id: res.locals.supplier.supplier_id,
+  };
+
+  suppliersService
+    .update(updatedSupplier)
+    .then((data) => res.json({ data }))
+    .catch(next);
 }
 
 async function destroy(req, res, next) {
+  await suppliersService.delete(res.locals.supplier.supplier_id);
   res.sendStatus(204);
 }
 
+// or
+// function destroy(req, res, next) {
+//   suppliersService
+//     .delete(res.locals.supplier.supplier_id)
+//     .then(() => res.sendStatus(204))
+//     .catch(next);
+// }
+
+//////////////////// MIDDLEWARES /////////////////// including read because no read in CRUD above
 const VALID_PROPERTIES = [
   "supplier_name",
   "supplier_address_line_1",
@@ -51,8 +69,29 @@ function hasOnlyValidProperties(req, res, next) {
   next();
 }
 
+function supplierExists(req, res, next) {
+  suppliersService
+    .read(req.params.supplierId)
+    .then((supplier) => {
+      if (supplier) {
+        res.locals.supplier = supplier;
+        return next();
+      }
+      next({ status: 404, message: `Supplier cannot be found.` });
+    })
+    .catch(next);
+}
 module.exports = {
-  create: [hasOnlyValidProperties, hasRequiredProperties, asyncErrorBoundary(create)],
-  update,
-  delete: destroy,
+  create: [
+    hasOnlyValidProperties,
+    hasRequiredProperties,
+    asyncErrorBoundary(create),
+  ],
+  update: [
+    supplierExists,
+    hasOnlyValidProperties,
+    hasRequiredProperties,
+    asyncErrorBoundary(update),
+  ],
+  delete: [supplierExists, asyncErrorBoundary(destroy)],
 };

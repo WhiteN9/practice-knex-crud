@@ -5,7 +5,7 @@ function list() {
 }
 
 function read(productId) {
-  return knex("products").select("*").where({ product_id: productId });
+  return knex("products").select("*").where({ product_id: productId }).first();
 }
 module.exports = {
   list,
