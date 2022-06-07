@@ -1,10 +1,16 @@
 const express = require("express");
 const app = express();
+const productsRouter = require("./products/products.router");
+const categoriesRouter = require("./categories/categories.router");
+const suppliersRouter = require("./suppliers/suppliers.router");
 
 //middlewares
 app.use(express.json());
 
 //routers
+app.use("/products", productsRouter);
+app.use("/categories", categoriesRouter);
+app.use("/suppliers", suppliersRouter);
 
 //not found handler
 app.use((req, res, next) => {
