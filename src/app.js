@@ -23,4 +23,4 @@ app.use((err, req, res, next) => {
   res.status(status).send({ error: message });
 });
 
-modules.export = app;
+module.exports = app;
