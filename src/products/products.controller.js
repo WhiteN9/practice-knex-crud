@@ -24,7 +24,7 @@ async function listOutOfStockCount(req, res, next) {
   res.json({ data: await productsService.listOutOfStockCount() });
 }
 
-async function listPriceSummary(req, res, next) {
+async function listPriceSummary(req, res) {
   res.json({ data: await productsService.listPriceSummary() });
 }
 
