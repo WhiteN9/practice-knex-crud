@@ -88,10 +88,10 @@ module.exports = {
     asyncErrorBoundary(create),
   ],
   update: [
-    supplierExists,
+    asyncErrorBoundary(supplierExists),
     hasOnlyValidProperties,
     hasRequiredProperties,
     asyncErrorBoundary(update),
   ],
-  delete: [supplierExists, asyncErrorBoundary(destroy)],
+  delete: [asyncErrorBoundary(supplierExists), asyncErrorBoundary(destroy)],
 };
